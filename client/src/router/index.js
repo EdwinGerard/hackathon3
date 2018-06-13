@@ -5,6 +5,7 @@ Vue.use(VueRouter)
 
 // Import views
 import HomeView from '../views/Home.vue'
+import DetailsView from '../views/Details.vue'
 
 // Create the router
 export default new VueRouter({
@@ -14,6 +15,11 @@ export default new VueRouter({
             name: 'home',
             path: '/',
             component: HomeView
+        },
+        {
+            name: 'details',
+            path: '/details',
+            component: DetailsView
         }
     ]
 })
