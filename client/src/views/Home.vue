@@ -3,7 +3,7 @@
         <!-- Navbar -->
         <!-- Header -->
         <div class="large-header">
-
+            <div class="overlay"></div>
         </div>
         <!-- Search bar -->
         <!-- Search results -->
