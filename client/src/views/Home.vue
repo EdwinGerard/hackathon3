@@ -1,7 +1,14 @@
 <template>
-    <div>
+    <section>
+        <!-- Navbar -->
+        <!-- Header -->
+        <div class="large-header">
+
+        </div>
+        <!-- Search bar -->
+        <!-- Search results -->
         {{ welcomeMessage }}
-    </div>
+    </section>
 </template>
 
 <script>
