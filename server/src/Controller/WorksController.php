@@ -74,8 +74,12 @@ class WorksController extends Controller
 
         $resultApi = $callApi->connect($apiId);
         // donc si pas en base, on l'ajoute dedans avant l'affichage
-        // $work = new Works();
-        // $work->setXXX()
+        $work = new Works();
+
+        $work->hydrate($resultApi);
+        var_dump($work);
+
+
         // flush
 
 

@@ -64,7 +64,7 @@ class Works
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $decriptionUrl;
+    private $descriptionUrl;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -255,6 +255,24 @@ class Works
     public function setApiId(int $apiId): self
     {
         $this->apiId = $apiId;
+
+        return $this;
+    }
+    public function hydrate(array $data)
+    {
+        foreach ($data as $key => $value){
+            $this->$key = $value;
+        }
+    }
+
+    public function getDescriptionUrl(): ?string
+    {
+        return $this->descriptionUrl;
+    }
+
+    public function setDescriptionUrl(?string $descriptionUrl): self
+    {
+        $this->descriptionUrl = $descriptionUrl;
 
         return $this;
     }
