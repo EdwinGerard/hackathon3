@@ -13,7 +13,6 @@ class CallApi
 {
     /**
      * @param int $id
-     * @param CurlService $curlService
      * @return mixed
      */
     public function connect(int $id)
@@ -64,7 +63,6 @@ class CallApi
 
     /**
      * @param string $request
-     * @param CurlService $curlService
      * @return mixed
      */
     public function searchResultsWork(string $request)
@@ -82,7 +80,6 @@ class CallApi
 
     /**
      * @param string $request
-     * @param CurlService $curlService
      * @return array
      */
     public function searchResultAuthor(string $request)
