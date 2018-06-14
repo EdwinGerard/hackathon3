@@ -22,12 +22,12 @@ class Works
     private $collection;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $periodStart;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $periodEnd;
 

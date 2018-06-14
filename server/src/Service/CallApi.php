@@ -79,7 +79,8 @@ class CallApi
             $work[ 'descriptionUrl' ] = $res->wikipedia_url->fr;
         }
         if (isset($res->date->display)) {
-            $work[ 'creationDate' ] = $res->date->display;
+            $date = new \DateTime($res->date->display);
+            $work[ 'creationDate' ] = $date;
         }
         $resf = $curlService->generateAPiUrl('authors', $authorName);
         $res = $resf->hits->hits[ 0 ];
