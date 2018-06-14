@@ -13,10 +13,11 @@
             align-items: center;
 
             .search-input {
-                background-color: rgba(0, 0, 0, 0.25);
+                background-color: rgba(0, 0, 0, 0.1);
                 color: white;
                 border-radius: 0%;
                 border: none;
+                box-shadow: none;
 
                 &:focus {
                     box-shadow: none;
