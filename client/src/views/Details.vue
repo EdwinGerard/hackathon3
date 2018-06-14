@@ -1,12 +1,11 @@
 <template>
         <section class="details-container">
             <div class="details-left">
-                <div class="content">
+                    <div class="content">
                     <!-- Lieu où ce trouve cette oeuvre -->
-                    <div class="location">
-                        <span>{{ artwork.locationName }} à {{ artwork.locationCity }}</span>
-                    </div>
-        
+                        <div class="location">
+                            <span>{{ artwork.locationName }} à {{ artwork.locationCity }}</span>
+                        </div>
                     <!-- Titer de l'oeuvre -->
                     <div class="title-artwork">
                         <h1 class="title is-2">
@@ -20,14 +19,12 @@
                     <p class="description-artwork" v-html="artwork.description"></p>
         
                     <!-- Autres liens -->
-                    <div class="field is-grouped">
-                        <p class="control">
-                            <a class="button is-light is-radiusless" href="#" target="_blank">A propos de l'auteur</a>
-                        </p>
-                        <p class="control">
-                            <a :href="artwork.descriptionUrl" target="_blank">Ou accéder à la page Wikipédia...</a>
-                        </p>
-                    </div>
+                        <div class="control">
+                            <a class="button is-light is-radiusless" href="#">A propos de l'auteur</a>
+                        </div>
+                        <div class="control">
+                            <a :href="artwork.descriptionUrl" target="_blank">Ou accéder à la page Wikipédia</a>
+                        </div>
                 </div>
             </div>
             <div class="details-right" v-bind:style="{ backgroundImage: 'url(' + this.artwork.image +')' }"></div>
@@ -35,6 +32,8 @@
 </template>
 
 <script>
+
+
 export default {
     name: 'details',
     data: () => ({

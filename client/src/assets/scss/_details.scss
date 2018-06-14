@@ -4,6 +4,8 @@
     background-position: center top;
     height: 100vh;
     &:hover {
+        background-size: contain;
+        background-position: center;
         opacity: 0.9;
     }
 }
@@ -27,12 +29,19 @@
     margin-bottom: 70px;    
     & > span {
         text-transform: capitalize;
-        padding: 5px 75px 5px 10px;
         background-color: black;
         font-size: 30px;
         color: white;
+        font-family: ssp-regular;
     }
 }
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
 
 @media (min-width: 960px) {
     .details-container {
@@ -42,5 +51,9 @@
         & > div {
             flex: 1;
         }
+    }
+
+    .location > span {
+        padding: 5px 75px 5px 10px;
     }
 }
