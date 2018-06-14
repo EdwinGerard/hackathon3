@@ -3,21 +3,64 @@
 namespace App\Controller;
 
 use App\Entity\Author;
-use App\Service\CallApi;
+use App\Service\SerializerService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * Class AuthorController
+ * @package App\Controller
+ * @Route("/author")
+ */
 class AuthorController extends Controller
 {
+    private $serializerService;
+
     /**
-     * @Route("/author", name="author")
+     * WorksController constructor.
+     * @param SerializerService $serializerService
      */
-    public function index()
+    public function __construct(SerializerService $serializerService)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/AuthorController.php',
-        ]);
+        $this->serializerService = $serializerService;
+    }
+
+    /**
+     * @param Author $author
+     * @param SerializerService $serializerService
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/", name="author")
+     */
+    public function index(SerializerService $serializerService)
+    {
+        $rep = $this->getDoctrine()->getRepository(Author::class);
+        $data = $rep->findAll();
+
+        return $this->serializerService->serialize($data);
+    }
+
+    /**
+     * @param Author $author
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/{id}",name="show_author")
+     */
+    public function showAction(Author $author)
+    {
+        $data['author']=$author;
+        return $this->serializerService->serialize($data);
+    }
+
+    /**
+     * @param Author $author
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/api/{apiId}",name="show_author_api")
+     */
+    public function showByApiId(Author $author)
+    {
+        $data['author']=$author;
+        return $this->serializerService->serialize($data);
     }
 
 //    /**
