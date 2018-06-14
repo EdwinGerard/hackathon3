@@ -29,7 +29,7 @@ class WorksRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('w')
             ->where('w.title LIKE :val')
             ->setParameter('val', '%'.$title.'%')
-            ->setFirstResult(12*$page-1)
+            ->setFirstResult(12*$page)
             ->setMaxResults(12)
             ->getQuery()
             ->getResult();

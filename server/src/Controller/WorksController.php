@@ -42,22 +42,27 @@ class WorksController extends Controller
      * @param CallApi $callApi
      * @param string $work
      * @param bool $allowBDD
+     * @param int $page
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/search/{str}", name="search_result")
+     * @Route("/search/{str}/{page}", name="search_result")
      * @Method("GET")
      */
-    public function searchByName(CallApi $callApi, string $str, $allowBDD = true)
+    public function searchByName(CallApi $callApi, string $str, $allowBDD = true, $page = 0)
     {
-        $works=null;
+        $works = null;
         if ($allowBDD) {
             $repository = $this->getDoctrine()->getRepository(Works::class);
-            $works = $repository->findByTitle($str);
+            $works = $repository->findByTitleLike($str, $page);
         }
         if (!$allowBDD || !isset($works[0])) {
             $works = $callApi->searchResultsWork($str);
         }
-
-        return $this->json($works);
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $data['works'] = $works;
+        $data = $serializer->serialize($data, 'json');
+        return $this->jsonResponse($data);
     }
 
     /**
@@ -87,7 +92,7 @@ class WorksController extends Controller
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
 
-        $data['work']=$work;
+        $data['work'] = $work;
 
         $data = $serializer->serialize($data, 'json');
         $response = new Response();
@@ -123,5 +128,14 @@ class WorksController extends Controller
         return $this->redirectToRoute('work_show', [
             'apiId' => $works->getApiId()
         ]);
+    }
+
+    private function jsonResponse($data)
+    {
+        $response = new Response();
+        $response->setContent($data);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 }
