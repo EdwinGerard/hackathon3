@@ -9,7 +9,6 @@
 namespace App\Controller;
 
 
-use App\Service\CurlService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,9 +37,9 @@ class DefaultController
      * @Route("/{string}", name="temp_search_result")
      * @Method("GET")
      */
-    public function searchAction(CallApi $callApi, CurlService $curlService, string $string)
+    public function searchAction(CallApi $callApi, string $string)
     {
-        $body = $callApi->searchResultsWork($string, $curlService);
+        $body = $callApi->searchResultsWork($string);
 
         return new Response(
             '<html><body>'.
@@ -53,9 +52,9 @@ class DefaultController
      * @Route("/author/{string}", name="temp_search_result_author")
      * @Method("GET")
      */
-    public function searchAuthorAction(CallApi $callApi, string $string, CurlService $curlService)
+    public function searchAuthorAction(CallApi $callApi, string $string)
     {
-        $body = $callApi->searchResultAuthor($string, $curlService);
+        $body = $callApi->searchResultAuthor($string);
 
         return new Response(
             '<html><body>'.
@@ -68,9 +67,9 @@ class DefaultController
      * @Route("/show/{id}", name="temp_show_oeuvre")
      * @Method("GET")
      */
-    public function showAction(CallApi $callApi, int $id, CurlService $curlService)
+    public function showAction(CallApi $callApi, int $id)
     {
-        $result = $callApi->connect($id, $curlService);
+        $result = $callApi->connect($id);
         $collection = '<p>'.$result['collection'].'</p>';
         $periodStart = '<p>'.$result['periodStart'].'</p>';
         $periodEnd = '<p>'.$result['periodEnd'].'</p>';

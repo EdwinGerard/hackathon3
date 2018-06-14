@@ -16,8 +16,9 @@ class CallApi
      * @param CurlService $curlService
      * @return mixed
      */
-    public function connect(int $id, CurlService $curlService)
+    public function connect(int $id)
     {
+        $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('works', $id);
         $res = $resf->hits->hits[ 0 ]->_source;
         $work[ 'apiId' ] = $res->id;
@@ -66,8 +67,10 @@ class CallApi
      * @param CurlService $curlService
      * @return mixed
      */
-    public function searchResultsWork(string $request, CurlService $curlService)
+    public function searchResultsWork(string $request)
     {
+        $curlService = new CurlService();
+
         $resf = $curlService->generateAPiUrl('works', $request);
         foreach ($resf->hits->hits as $hit) {
             $images['image'][] = $hit->_source->images[ 0 ]->urls->huge->url;
@@ -82,8 +85,9 @@ class CallApi
      * @param CurlService $curlService
      * @return array
      */
-    public function searchResultAuthor(string $request, CurlService $curlService)
+    public function searchResultAuthor(string $request)
     {
+        $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('authors', $request);
         foreach ($resf->hits->hits as $hit) {
             $titles[] = $hit->_source->name->fr;
