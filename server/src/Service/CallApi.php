@@ -9,6 +9,8 @@
 namespace App\Service;
 
 
+use DateTime;
+
 class CallApi
 {
     /**
@@ -66,15 +68,9 @@ class CallApi
             $work['title'] = $res->title->fr;
 
         }
-        if (isset($res->authors[0]->name->fr)) {
-            $authorName = $res->authors[0]->name->fr;
-            $resf = $curlService->generateAPiUrl('authors', $authorName);
-            $res = $resf->hits->hits[0];
-            $work['authorName'] = $authorName;
-            $work['authorApiId'] = $res->_id;
-        }
-        if (isset($res->techniques[0])) {
-            $work['technique'] = $res->techniques[0]->suggest_fr->input;
+
+        if (isset($res->techniques[ 0 ])) {
+            $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
         }
 
         if (isset($res->wikipedia_extract->fr)) {
@@ -82,8 +78,14 @@ class CallApi
             $work['descriptionUrl'] = $res->wikipedia_url->fr;
         }
         if (isset($res->date->display)) {
-            $date = new \DateTime($res->date->display);
-            $work['creationDate'] = $date;
+            $work[ 'creationDate' ] = intval($res->date->display);
+        }
+        if (isset($res->authors[ 0 ]->name->fr)) {
+            $authorName = $res->authors[ 0 ]->name->fr;
+            $resf2 = $curlService->generateAPiUrl('authors', $authorName);
+            $res2 = $resf2->hits->hits[ 0 ];
+            $work[ 'authorName' ] = $authorName;
+            $work[ 'authorApiId' ] = $res2->_id;
         }
 
         return $work;
