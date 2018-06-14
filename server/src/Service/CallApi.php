@@ -86,16 +86,6 @@ class CallApi
         $res = $resf->hits->hits[ 0 ];
         $work[ 'authorName' ] = $authorName;
         $work[ 'authorApiId' ] = $res->_id;
-//        $authors = $res->_source;
-//        $author[ 'name' ] = $authors->name->fr;
-//        $author[ 'birthday' ] = $authors->birth->display;
-//        $author[ 'death' ] = $authors->death->display;
-//        $author[ 'wikipedia_extract' ] = '';
-//        $author[ 'wikipedia_url' ] = '';
-//        if (isset($authors->wikipedia_url->fr)) {
-//            $author[ 'wikipedia_extract' ] = $authors->wikipedia_extract->fr;
-//            $author[ 'wikipedia_url' ] = $authors->wikipedia_url->fr;
-//        }
 
         return $work;
     }

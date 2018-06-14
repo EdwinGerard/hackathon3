@@ -204,18 +204,6 @@ class Works
         return $this;
     }
 
-    public function getDecriptionUrl(): ?string
-    {
-        return $this->decriptionUrl;
-    }
-
-    public function setDecriptionUrl(?string $decriptionUrl): self
-    {
-        $this->decriptionUrl = $decriptionUrl;
-
-        return $this;
-    }
-
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creationDate;
