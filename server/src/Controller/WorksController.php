@@ -6,6 +6,7 @@ use App\Entity\Works;
 use App\Service\CallApi;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -39,14 +40,13 @@ class WorksController extends Controller
      * @Route("/search/{work}", name="search_result")
      * @Method("GET")
      */
-    public function searchByName(CallApi $callApi, string $work , $allowBDD = false)
+    public function searchByName(CallApi $callApi, string $work, $allowBDD = false)
     {
 
-        if($allowBDD){
+        if ($allowBDD) {
             $repository = $this->getDoctrine()->getRepository(Works::class);
             $works = $repository->findBy(['title' => '%' . $work . '%']);
-        }
-        else{
+        } else {
             $works = $callApi->searchResultsWork($work);
         }
 
@@ -67,10 +67,9 @@ class WorksController extends Controller
         $repository = $this->getDoctrine()->getRepository(Works::class);
         $work = $repository->findOneBy(['apiId' => $apiId]);
 
-        if ( $work != null ){
+        if ($work != null) {
             return $this->json($work);
         }
-
 
         $resultApi = $callApi->connect($apiId);
         $work = new Works();
@@ -81,11 +80,21 @@ class WorksController extends Controller
         $entityManager->flush();
 
 
+        return $this->json($work);
+    }
 
+    /**
+     * @param Request $request
+     * @param Works $works
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/edit/{apiId}",name="work_edit")
+     */
+    public function edit(Request $request, Works $works)
+    {
 
-
-
-        return $this->json($resultApi);
+        return $this->redirectToRoute('work_show', [
+            'apiId' => $works->getApiId()
+        ]);
     }
 
     /**
