@@ -89,9 +89,7 @@ class WorksController extends Controller
         $data['work']=$work;
 
         $data = $serializer->serialize($data, 'json');
-        dump(json_decode($data));
         return new Response($data);
-//        return $this->json($data);
     }
 
     /**
