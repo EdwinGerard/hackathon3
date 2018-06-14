@@ -1,0 +1,6 @@
+@each $font in ( 'Black', 'Bold', 'ExtraLight', 'Italic', 'Light', 'Regular', 'SemiBold' ) {
+    @font-face {
+        font-family: 'ssp-' + to-lower-case($font);
+        src: url('/static/fonts/SourceSansPro-' + $font + '.ttf');
+    }
+}
