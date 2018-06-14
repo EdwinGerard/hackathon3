@@ -71,9 +71,11 @@ class Author
         foreach ($data as $key => $value){
             if($key == 'birth' || $key == 'death'){
                 $value = DateTime::createFromFormat('Y-m-d', $value);
-            }
 
-            $this->$key = $value;
+            }
+            if($value != null ) {
+                $this->$key = $value;
+            }
         }
     }
 
