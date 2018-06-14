@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 
+use App\Service\CurlService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +19,7 @@ use App\Service\CallApi;
 class DefaultController
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="temp_homepage")
      * @return Response
      */
     public function indexAction ()
@@ -34,58 +35,55 @@ class DefaultController
     }
 
     /**
-     * @Route("/{string}", name="search_result")
+     * @Route("/{string}", name="temp_search_result")
      * @Method("GET")
      */
-    public function searchAction(CallApi $callApi, string $string)
+    public function searchAction(CallApi $callApi, CurlService $curlService, string $string)
     {
-        $body = $callApi->searchResultsWork($string);
+        $body = $callApi->searchResultsWork($string, $curlService);
 
         return new Response(
             '<html><body>'.
-            $body
+            var_dump($body)
             .'</body></html>'
         );
     }
 
     /**
-     * @Route("/author/{string}", name="search_result_author")
+     * @Route("/author/{string}", name="temp_search_result_author")
      * @Method("GET")
      */
-    public function searchAuthorAction(CallApi $callApi, string $string)
+    public function searchAuthorAction(CallApi $callApi, string $string, CurlService $curlService)
     {
-        $body = $callApi->searchResultAuthor($string);
+        $body = $callApi->searchResultAuthor($string, $curlService);
 
         return new Response(
             '<html><body>'.
-            $body
+            var_dump($body)
             .'</body></html>'
         );
     }
 
     /**
-     * @Route("/show/{id}", name="show_oeuvre")
+     * @Route("/show/{id}", name="temp_show_oeuvre")
      * @Method("GET")
      */
-    public function showAction(CallApi $callApi, int $id)
+    public function showAction(CallApi $callApi, int $id, CurlService $curlService)
     {
-        $result = $callApi->connect($id);
+        $result = $callApi->connect($id, $curlService);
         $collection = '<p>'.$result['collection'].'</p>';
-        $periodStart = '<p>'.$result['period']['start'].'</p>';
-        $periodEnd = '<p>'.$result['period']['end'].'</p>';
-        $technique = '<p>'.$result['techniques'].'</p>';
-        $locationName = '<p>'.$result['location']['name'].'</p>';
-        $locationCity = '<p>'.$result['location']['city'].'</p>';
+        $periodStart = '<p>'.$result['periodStart'].'</p>';
+        $periodEnd = '<p>'.$result['periodEnd'].'</p>';
+        $technique = '<p>'.$result['technique'].'</p>';
+        $locationName = '<p>'.$result['locationName'].'</p>';
+        $locationCity = '<p>'.$result['locationCity'].'</p>';
         $image = '<p><img src="'.$result['image'].'"style="width: 150px;height: 200px;" ></p>';
         $title = '<p>'.$result['title'].'</p>';
-        $wikiText = $result['wikipedia_extract'];
-        $wikiUrl = '<p><a href="'.$result['wikipedia_url'].'">'.$result['wikipedia_url'].'</a></p>';
-        $date = '<p>'.$result['date'].'</p>';
-        $authorName = '<p>'.$result['author']['name'].'</p>';
-        $authorBirth = '<p>'.$result['author']['birthday'].'</p>';
-        $authorDeath = '<p>'.$result['author']['death'].'</p>';
-        $authorWikiText = '<p>'.$result['author']['wikipedia_extract'].'</p>';
-        $authorWikiUrl = '<p><a href="'.$result['author']['wikipedia_url'].'">'.$result['author']['wikipedia_url'].'</a></p>';
+        $description = $result['description'];
+        $descriptionUrl = '<p><a href="'.$result['descriptionUrl'].'">'.$result['descriptionUrl'].'</a></p>';
+        $creationDate = '<p>'.$result['creationDate'].'</p>';
+        $authorName = '<p>'.$result['authorName'].'</p>';
+        $authorApiId = '<p>'.$result['authorApiId'].'</p>';
         $body = $collection.
             $periodStart.
             $periodEnd.
@@ -94,14 +92,11 @@ class DefaultController
             $locationCity.
             $image.
             $title.
-            $wikiText.
-            $wikiUrl.
-            $date.
+            $description.
+            $descriptionUrl.
+            $creationDate.
             $authorName.
-            $authorBirth.
-            $authorDeath.
-            $authorWikiText.
-            $authorWikiUrl;
+            $authorApiId;
 
         return new Response(
             '<html><body>'. $body .'</body></html>'
