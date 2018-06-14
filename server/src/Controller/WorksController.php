@@ -95,6 +95,7 @@ class WorksController extends Controller
      * @param Works $works
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/edit/{apiId}",name="work_edit")
+     * @Method({"GET","POST"})
      */
     public function edit(Request $request, Works $works)
     {
