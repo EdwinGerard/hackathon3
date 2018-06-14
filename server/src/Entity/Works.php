@@ -81,6 +81,11 @@ class Works
      */
     private $authorApiId;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $apiId;
+
     public function getId()
     {
         return $this->id;
@@ -238,6 +243,18 @@ class Works
     public function setAuthorApiId(?int $authorApiId): self
     {
         $this->authorApiId = $authorApiId;
+
+        return $this;
+    }
+
+    public function getApiId(): ?int
+    {
+        return $this->apiId;
+    }
+
+    public function setApiId(int $apiId): self
+    {
+        $this->apiId = $apiId;
 
         return $this;
     }

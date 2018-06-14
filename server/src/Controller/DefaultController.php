@@ -18,7 +18,7 @@ use App\Service\CallApi;
 class DefaultController
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="temp_homepage")
      * @return Response
      */
     public function indexAction ()
@@ -34,7 +34,7 @@ class DefaultController
     }
 
     /**
-     * @Route("/{string}", name="search_result")
+     * @Route("/{string}", name="temp_search_result")
      * @Method("GET")
      */
     public function searchAction(CallApi $callApi, string $string)
@@ -49,7 +49,7 @@ class DefaultController
     }
 
     /**
-     * @Route("/author/{string}", name="search_result_author")
+     * @Route("/author/{string}", name="temp_search_result_author")
      * @Method("GET")
      */
     public function searchAuthorAction(CallApi $callApi, string $string)
@@ -64,7 +64,7 @@ class DefaultController
     }
 
     /**
-     * @Route("/show/{id}", name="show_oeuvre")
+     * @Route("/show/{id}", name="temp_show_oeuvre")
      * @Method("GET")
      */
     public function showAction(CallApi $callApi, int $id)
