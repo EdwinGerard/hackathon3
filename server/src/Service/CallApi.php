@@ -71,8 +71,8 @@ class CallApi
 
         $resf = $curlService->generateAPiUrl('works', $request);
         foreach ($resf->hits->hits as $hit) {
-            $images['image'][] = $hit->_source->images[ 0 ]->urls->huge->url;
-            $images['id'][] = $hit->_source->id;
+            $images[]['image'] = $hit->_source->images[ 0 ]->urls->huge->url;
+            $images[]['id'] = $hit->_source->id;
         }
 
         return $images;
