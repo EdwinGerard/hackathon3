@@ -58,7 +58,7 @@ class DefaultController
 
         return new Response(
             '<html><body>'.
-            var_dump($body)
+            $body
             .'</body></html>'
         );
     }

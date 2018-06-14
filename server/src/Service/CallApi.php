@@ -112,7 +112,7 @@ class CallApi
     {
         $q = $string;
         $q = urlencode($q);
-        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/authors?q='.$string.'&lang=fr&&&&&&&&&&&';
+        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/authors?q='.$q.'&lang=fr&&&&&&&&&&&';
 //        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/works?q=' . $q . '&lang=fr&&&&&&&&&&&&&&&&per_page=10&&&&&&&&&&&&&&&&&&';
         $apiKey = '210ccc2ea7fc69e80d2bcd929ed801d4d19f21675addf8541be51da48e2b19d8';
         $headers = array(
@@ -132,15 +132,16 @@ class CallApi
         curl_close($ch);
         //echo $resultat;
         $resf = json_decode($resultat);
-//        foreach ($resf->hits->hits as $hit) {
-//            $images[] = '<a href="/show/'.$hit->_source->id.'"> <img src='. $hit->_source->images[ 0 ]->urls->huge->url .' style="width: 150px;height: 200px;" ></a>';
-//            //    var_dump($hit->_source->images[0]->urls->huge->url);
-//        }
-//        $body = '';
-//        foreach ($images as $image) {
-//            $body .= $image.'';
-//        }
+        foreach ($resf->hits->hits as $hit) {
+//            $titles[] = '<a href="/author/show/'.$hit->_id.'">'.$hit->_source->name->fr.'</a>';
+            $titles[] = '<p>'.$hit->_source->name->fr.'</p>';
+        }
+        $body = '';
+        foreach ($titles as $title) {
+            $body .= $title.'';
+        }
 
-        return $resf->hits->hits;
+        return $body;
     }
+
 }
