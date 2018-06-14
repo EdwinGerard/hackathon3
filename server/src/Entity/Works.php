@@ -91,6 +91,11 @@ class Works
      */
     private $badgeId;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Author", inversedBy="works")
+     */
+    private $author;
+
     public function jsonSerialize()
     {
         return get_object_vars($this);
@@ -308,6 +313,18 @@ class Works
     public function setCreationDate(?int $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Author $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

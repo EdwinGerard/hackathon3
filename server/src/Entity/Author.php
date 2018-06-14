@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -51,6 +53,16 @@ class Author
      * @ORM\Column(type="integer", nullable=true)
      */
     private $apiId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Works", mappedBy="author")
+     */
+    private $works;
+
+    public function __construct()
+    {
+        $this->works = new ArrayCollection();
+    }
 
 
 
@@ -150,6 +162,37 @@ class Author
     public function setApiId(?int $apiId): self
     {
         $this->apiId = $apiId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorks(): Collection
+    {
+        return $this->works;
+    }
+
+    public function addWork(Works $work): self
+    {
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWork(Works $work): self
+    {
+        if ($this->works->contains($work)) {
+            $this->works->removeElement($work);
+            // set the owning side to null (unless already changed)
+            if ($work->getAuthor() === $this) {
+                $work->setAuthor(null);
+            }
+        }
 
         return $this;
     }

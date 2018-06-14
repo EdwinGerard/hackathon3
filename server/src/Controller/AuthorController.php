@@ -6,8 +6,7 @@ use App\Entity\Author;
 use App\Service\SerializerService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+
 
 /**
  * Class AuthorController
