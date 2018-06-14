@@ -24,8 +24,13 @@ class SerializerService
     public function serialize(array $data)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
+        $normalizer = new ObjectNormalizer();
+
+
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $serializer = new Serializer([$normalizer], $encoders);
         $data = $serializer->serialize($data, 'json');
         $response = $this->jsonResponse($data);
         return $response;

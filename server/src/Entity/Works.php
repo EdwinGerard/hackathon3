@@ -91,6 +91,11 @@ class Works
      */
     private $badgeId;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Author", inversedBy="works")
+     */
+    private $author;
+
     public function jsonSerialize()
     {
         return get_object_vars($this);
@@ -100,24 +105,26 @@ class Works
      * @param array $data
      * @return string
      */
-    public function hydrate(array $data):string
+    public function hydrate(array $data): string
     {
         foreach ($data as $key => $value) {
             if ($key == 'creationDate' && $value == null) {
                 unset($data[$key]);
+            } else if ($key == 'author') {
+                unset($data[$key]);
             } else {
 
-                if(property_exists($this,$key)){
+                if (property_exists($this, $key)) {
                     $this->$key = $value;
                     unset($data[$key]);
                 }
             }
         }
         // control des infos non hydratées
-        $msg='';
-        if(!empty($data)){
-            foreach($data as $key => $value){
-                $msg.='key:'.$key.' value:'.$value.'<br>';
+        $msg = '';
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $msg .= 'key:' . $key . ' value:' . $value . '<br>';
             }
         }
 
@@ -306,6 +313,18 @@ class Works
     public function setCreationDate(?int $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Author $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

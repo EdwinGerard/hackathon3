@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,14 +37,47 @@ class Author
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $bio;
+    private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $bioUrl;
+    private $descriptionUrl;
 
-    public function getId()
+    /**
+     * @ORM\Column(type="string", length=80, nullable=true)
+     */
+    private $citizen;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $apiId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Works", mappedBy="author")
+     */
+    private $works;
+
+    public function __construct()
+    {
+        $this->works = new ArrayCollection();
+    }
+
+
+
+    public function hydrate(array $data)
+    {
+        foreach ($data as $key => $value){
+            if($key == 'birth' || $key == 'death'){
+                $value = DateTime::createFromFormat('Y-m-d', $value);
+            }
+
+            $this->$key = $value;
+        }
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -82,34 +118,84 @@ class Author
         return $this;
     }
 
-    public function getBio(): ?string
+    public function getDescription(): ?string
     {
-        return $this->bio;
+        return $this->description;
     }
 
-    public function setBio(?string $bio): self
+    public function setDescription(?string $description): self
     {
-        $this->bio = $bio;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function getBioUrl(): ?string
+    public function getDescriptionUrl(): ?string
     {
-        return $this->bioUrl;
+        return $this->descriptionUrl;
     }
 
-    public function setBioUrl(?string $bioUrl): self
+    public function setDescriptionUrl(?string $descriptionUrl): self
     {
-        $this->bioUrl = $bioUrl;
+        $this->descriptionUrl = $descriptionUrl;
 
         return $this;
     }
 
-    public function hydrate(array $data)
+    public function getCitizen(): ?string
     {
-        foreach ($data as $key => $value){
-            $this->$key = $value;
+        return $this->citizen;
+    }
+
+    public function setCitizen(?string $citizen): self
+    {
+        $this->citizen = $citizen;
+
+        return $this;
+    }
+
+    public function getApiId(): ?int
+    {
+        return $this->apiId;
+    }
+
+    public function setApiId(?int $apiId): self
+    {
+        $this->apiId = $apiId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorks(): Collection
+    {
+        return $this->works;
+    }
+
+    public function addWork(Works $work): self
+    {
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setAuthor($this);
         }
+
+        return $this;
     }
+
+    public function removeWork(Works $work): self
+    {
+        if ($this->works->contains($work)) {
+            $this->works->removeElement($work);
+            // set the owning side to null (unless already changed)
+            if ($work->getAuthor() === $this) {
+                $work->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Works;
 use App\Service\CallApi;
 use App\Service\SerializerService;
@@ -24,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class WorksController extends Controller
 {
     private $serializerService;
+
     /**
      * WorksController constructor.
      * @param SerializerService $serializerService
@@ -75,14 +77,30 @@ class WorksController extends Controller
             $work = new Works();
 
             $data['error'] = $work->hydrate($resultApi);
+
+
+            // on recherche si l'autheur exist
+            $repositoryAuthor = $this->getDoctrine()->getRepository(Author::class);
+            $author = $repositoryAuthor->findOneByApiId($resultApi['authorApiId']);
+
             $entityManager = $this->getDoctrine()->getManager();
+
+            if ($author == null) {
+                $author = new Author();
+                $author->hydrate($resultApi['author']);
+
+                $entityManager->persist($author);
+                $entityManager->flush();
+                $author = $repositoryAuthor->findOneByApiId($resultApi['authorApiId']);
+            }
+
+            $work->setAuthor($author);
             $entityManager->persist($work);
             $entityManager->flush();
 
         }
 
         $data['work'] = $work;
-
         return $this->serializerService->serialize($data);
 
     }
@@ -94,7 +112,7 @@ class WorksController extends Controller
      */
     public function showBadge(Works $works)
     {
-        $data['work']=$works;
+        $data['work'] = $works;
 
         return $this->serializerService->serialize($data);
 
