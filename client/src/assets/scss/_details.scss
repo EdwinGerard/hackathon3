@@ -1,0 +1,33 @@
+.details-container {
+    display: flex;
+    height: 100vh;
+
+    & > div {
+        flex: 1;
+    }
+}
+
+.picture-art {
+    background-image: url('/static/backgrounds/lajoconde.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.text-art{
+    margin-top: 200px;
+}
+
+.title-artwork{
+    margin-left: 50px;
+}
+
+.author-artwork{
+    font-size: 25px;
+    margin-left: 50px;
+}
+
+.description-artwork{
+    font-size:18px;
+    margin-left: 50px;
+    margin-top: 20px;
+}
