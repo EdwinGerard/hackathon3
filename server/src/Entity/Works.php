@@ -67,7 +67,7 @@ class Works
     private $descriptionUrl;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $creationDate;
 
@@ -106,11 +106,11 @@ class Works
             if ($key == 'creationDate' && $value == null) {
                 unset($data[$key]);
             } else {
-                if(isset($this->$key)){
+
+                if(property_exists($this,$key)){
                     $this->$key = $value;
                     unset($data[$key]);
                 }
-
             }
         }
         // control des infos non hydratées
@@ -250,19 +250,6 @@ class Works
         return $this;
     }
 
-
-    public function getCreationDate(): ?\DateTimeInterface
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate(?\DateTimeInterface $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
     public function getAuthorName(): ?string
     {
         return $this->authorName;
@@ -307,6 +294,18 @@ class Works
     public function setBadgeId(?int $badgeId): self
     {
         $this->badgeId = $badgeId;
+
+        return $this;
+    }
+
+    public function getCreationDate(): ?int
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(?int $creationDate): self
+    {
+        $this->creationDate = $creationDate;
 
         return $this;
     }
