@@ -148,4 +148,32 @@ class CallApi
         return $titles;
     }
 
+    public function findAuthor(string $request)
+    {
+        $curlService = new CurlService();
+        $resf = $curlService->generateAPiUrl('authors', $request);
+        $res = $resf->hits->hits[ 0 ]->_source;
+        $author['name'] = '';
+        $author['birth'] = '';
+        $author['death'] = '';
+        $author['bio'] = '';
+        $author['bioUrl'] = '';
+        if (isset($res->name->fr)) {
+            $author['name'] = $res->name->fr;
+        }
+        if (isset($res->birth->display)) {
+            $author['birth'] = $res->birth->display;
+        }
+        if (isset($res->death->display)) {
+            $author['death'] = $res->death->display;
+        }
+        if (isset($res->wikipedia_extract->fr)) {
+            $author['bio'] = $res->wikipedia_extract->fr;
+        }
+        if (isset($res->wikipedia_url->fr)) {
+            $author['bioUrl'] = $res->wikipedia_url->fr;
+        }
+        return $author;
+    }
+
 }
