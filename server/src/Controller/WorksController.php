@@ -104,18 +104,4 @@ class WorksController extends Controller
             'apiId' => $works->getApiId()
         ]);
     }
-
-    /**
-     * A déplacer!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     * @Route("/author/{string}", name="temp_search_result_author")
-     * @param CallApi $callApi
-     * @param string $string
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function searchAuthorAction(CallApi $callApi, string $string)
-    {
-        $body = $callApi->searchResultAuthor($string);
-        return $this->json($body);
-    }
 }

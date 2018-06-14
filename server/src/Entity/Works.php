@@ -221,6 +221,7 @@ class Works
         return $this;
     }
 
+
     public function getDescriptionUrl(): ?string
     {
         return $this->descriptionUrl;
@@ -232,6 +233,7 @@ class Works
 
         return $this;
     }
+
 
     public function getCreationDate(): ?\DateTimeInterface
     {
