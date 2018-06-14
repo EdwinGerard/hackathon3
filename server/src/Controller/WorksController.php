@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * @package App\Controller
  * @ORM\Entity
  * @ORM\Table(name="works_controller")
- * @ORM\Embedded
+ *
  */
 class WorksController extends Controller
 {
@@ -36,7 +36,7 @@ class WorksController extends Controller
      * @param string $work
      * @param bool $allowBDD
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/{work}", name="search_result")
+     * @Route("/search/{work}", name="search_result")
      * @Method("GET")
      */
     public function searchByName(CallApi $callApi, string $work , $allowBDD = false)
@@ -52,21 +52,27 @@ class WorksController extends Controller
 
 
         // attention $works doit être du JSON
-        $works = json_encode($works);
         return $this->json($works);
     }
 
-    public function show(CallApi $callApi, int $id)
+    /**
+     * @param CallApi $callApi
+     * @param int $apiId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/id/{apiId}",name="work_show")
+     * @Method("GET")
+     */
+    public function show(CallApi $callApi, int $apiId)
     {
         $repository = $this->getDoctrine()->getRepository(Works::class);
-        $work = $repository->findOneBy(['apiId' => $id]);
+        $work = $repository->findOneBy(['apiId' => $apiId]);
 
         if ( $work != null ){
             return $this->json($work);
         }
 
 
-        $resultApi = $callApi->connect($id);
+        $resultApi = $callApi->connect($apiId);
         // donc si pas en base, on l'ajoute dedans avant l'affichage
         // $work = new Works();
         // $work->setXXX()
@@ -76,5 +82,19 @@ class WorksController extends Controller
 
 
         return $this->json($resultApi);
+    }
+
+    /**
+     * A déplacer!!!!!!!!!!!!!!!!!!!!!!!!
+     *
+     * @Route("/author/{string}", name="temp_search_result_author")
+     * @param CallApi $callApi
+     * @param string $string
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function searchAuthorAction(CallApi $callApi, string $string)
+    {
+        $body = $callApi->searchResultAuthor($string);
+        return $this->json($body);
     }
 }
