@@ -96,16 +96,32 @@ class Works
         return get_object_vars($this);
     }
 
-    public function hydrate(array $data)
+    /**
+     * @param array $data
+     * @return string
+     */
+    public function hydrate(array $data):string
     {
         foreach ($data as $key => $value) {
             if ($key == 'creationDate' && $value == null) {
-
+                unset($data[$key]);
             } else {
-                $this->$key = $value;
-            }
+                if(isset($this->$key)){
+                    $this->$key = $value;
+                    unset($data[$key]);
+                }
 
+            }
         }
+        // control des infos non hydratées
+        $msg='';
+        if(!empty($data)){
+            foreach($data as $key => $value){
+                $msg.='key:'.$key.' value:'.$value.'<br>';
+            }
+        }
+
+        return $msg;
     }
 
     public function getId(): ?int

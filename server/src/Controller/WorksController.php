@@ -95,10 +95,21 @@ class WorksController extends Controller
      * @param Works $works
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/edit/{apiId}",name="work_edit")
-     * @Method({"GET","POST"})
+     * @Method("POST")
      */
     public function edit(Request $request, Works $works)
     {
+
+        $data = $request->query->all();
+        $work = new Works();
+        $error = $work->hydrate($data);
+
+        if (!empty($error)) {
+            dump($error);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($work);
+        $entityManager->flush();
 
         return $this->redirectToRoute('work_show', [
             'apiId' => $works->getApiId()
