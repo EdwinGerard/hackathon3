@@ -20,6 +20,12 @@ class AuthorController extends Controller
         ]);
     }
 
+    /**
+     * @param CallApi $callApi
+     * @param string $name
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/author/show/{name}", name="show_author")
+     */
     public function show(CallApi $callApi, string $name)
     {
         $repository = $this->getDoctrine()->getRepository(Author::class);
@@ -48,7 +54,7 @@ class AuthorController extends Controller
     }
 
     /**
-     * @Route("/author/{string}", name="temp_search_result_author")
+     * @Route("/author/search/{string}", name="temp_search_result_author")
      * @param CallApi $callApi
      * @param string $string
      * @return \Symfony\Component\HttpFoundation\JsonResponse
