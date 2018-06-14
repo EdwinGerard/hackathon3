@@ -66,7 +66,7 @@ class CallApi
             $work[ 'description' ] = $res->wikipedia_extract->fr;
             $work[ 'descriptionUrl' ] = $res->wikipedia_url->fr;
         }
-        $work[ 'date' ] = '';
+        $work[ 'creationDate' ] = '';
         if (isset($res->date->display)) {
             $work[ 'creationDate' ] = $res->date->display;
         }
