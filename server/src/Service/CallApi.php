@@ -11,137 +11,85 @@ namespace App\Service;
 
 class CallApi
 {
-    public function connect(int $id)
+    /**
+     * @param int $id
+     * @param CurlService $curlService
+     * @return mixed
+     */
+    public function connect(int $id, CurlService $curlService)
     {
-        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/works/' . $id;
-        $apiKey = '210ccc2ea7fc69e80d2bcd929ed801d4d19f21675addf8541be51da48e2b19d8';
-        $headers = array(
-            'Authorization: ' . $apiKey,
-            'ApiKey:' . $apiKey,
-        );
-        $ch = curl_init();
-        //On lui transmet la variable qui contient l'URL
-        curl_setopt($ch, CURLOPT_URL, $wikipediaURL);
-        //On lui demdande de nous retourner la page
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //On envoie un user-agent pour ne pas être considéré comme un bot malicieux
-        //On exécute notre requête et met le résultat dans une variable
-        $resultat = curl_exec($ch);
-        //On ferme la connexion cURL
-        curl_close($ch);
-        //echo $resultat;
-        $resf = json_decode($resultat);
+        $resf = $curlService->generateAPiUrl('works', $id);
         $res = $resf->hits->hits[ 0 ]->_source;
-        $work[ 'id' ] = $res->id;
+        $work[ 'apiId' ] = $res->id;
         $work[ 'collection' ] = $res->collections[ 0 ]->name->fr;
-        $work[ 'period' ][ 'start' ] = $res->periods[ 0 ]->suggest_fr->input;
-        $work[ 'period' ][ 'end' ] = $res->periods[ 0 ]->suggest_fr->output;
-        $work[ 'techniques' ] = '';
+        $work[ 'periodStart' ] = $res->periods[ 0 ]->suggest_fr->input;
+        $work[ 'periodEnd' ] = $res->periods[ 0 ]->suggest_fr->output;
+        $work[ 'technique' ] = '';
         if (isset($res->techniques[ 0 ])) {
-            $work[ 'techniques' ] = $res->techniques[ 0 ]->suggest_fr->input;
+            $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
         }
-        $work[ 'location' ][ 'name' ] = $res->location->name->fr;
-        $work[ 'location' ][ 'city' ] = $res->location->city->fr;
+        $work[ 'locationName' ] = $res->location->name->fr;
+        $work[ 'locationCity' ] = $res->location->city->fr;
         $work[ 'image' ] = $res->images[ 0 ]->urls->huge->url;
         $work[ 'title' ] = $res->title->fr;
-        $work[ 'wikipedia_extract' ] = '';
-        $work[ 'wikipedia_url' ] = '';
+        $work[ 'description' ] = '';
+        $work[ 'descriptionUrl' ] = '';
         if (isset($res->wikipedia_extract->fr)) {
-            $work[ 'wikipedia_extract' ] = $res->wikipedia_extract->fr;
-            $work[ 'wikipedia_url' ] = $res->wikipedia_url->fr;
+            $work[ 'description' ] = $res->wikipedia_extract->fr;
+            $work[ 'descriptionUrl' ] = $res->wikipedia_url->fr;
         }
         $work[ 'date' ] = '';
         if (isset($res->date->display)) {
-            $work[ 'date' ] = $res->date->display;
+            $work[ 'creationDate' ] = $res->date->display;
         }
-        $authors = $res->authors[ 0 ];
-        $author[ 'name' ] = $authors->name->fr;
-        $author[ 'birthday' ] = $authors->birth->display;
-        $author[ 'death' ] = $authors->death->display;
-        $author[ 'wikipedia_extract' ] = '';
-        $author[ 'wikipedia_url' ] = '';
-        if (isset($authors->wikipedia_url->fr)) {
-            $author[ 'wikipedia_extract' ] = $authors->wikipedia_extract->fr;
-            $author[ 'wikipedia_url' ] = $authors->wikipedia_url->fr;
-        }
-        $work[ 'author' ] = $author;
-
-        $workJson = json_encode($work);
+        $authorName = $res->authors[0]->name->fr;
+        $resf = $curlService->generateAPiUrl('authors', $authorName);
+        $res = $resf->hits->hits[ 0 ];
+        $work[ 'authorName' ] = $authorName;
+        $work['authorApiId'] = $res->_id;
+//        $authors = $res->_source;
+//        $author[ 'name' ] = $authors->name->fr;
+//        $author[ 'birthday' ] = $authors->birth->display;
+//        $author[ 'death' ] = $authors->death->display;
+//        $author[ 'wikipedia_extract' ] = '';
+//        $author[ 'wikipedia_url' ] = '';
+//        if (isset($authors->wikipedia_url->fr)) {
+//            $author[ 'wikipedia_extract' ] = $authors->wikipedia_extract->fr;
+//            $author[ 'wikipedia_url' ] = $authors->wikipedia_url->fr;
+//        }
 
         return $work;
     }
 
-    public function searchResultsWork(string $string)
+    /**
+     * @param string $request
+     * @param CurlService $curlService
+     * @return mixed
+     */
+    public function searchResultsWork(string $request, CurlService $curlService)
     {
-        $q = $string;
-        $q = urlencode($q);
-        //$wikipediaURL = 'https://api.art.rmngp.fr:443/v1/authors?q=title:'.$a.'&lang=fr&&&&&&&&&&&';
-        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/works?q=' . $q . '&lang=fr&&&&&&&&&&&&&&&&per_page=10&&&&&&&&&&&&&&&&&&';
-        $apiKey = '210ccc2ea7fc69e80d2bcd929ed801d4d19f21675addf8541be51da48e2b19d8';
-        $headers = array(
-            'Authorization: ' . $apiKey,
-            'ApiKey:' . $apiKey,
-        );
-        $ch = curl_init();
-        //On lui transmet la variable qui contient l'URL
-        curl_setopt($ch, CURLOPT_URL, $wikipediaURL);
-        //On lui demdande de nous retourner la page
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //On envoie un user-agent pour ne pas être considéré comme un bot malicieux
-        //On exécute notre requête et met le résultat dans une variable
-        $resultat = curl_exec($ch);
-        //On ferme la connexion cURL
-        curl_close($ch);
-        //echo $resultat;
-        $resf = json_decode($resultat);
+        $resf = $curlService->generateAPiUrl('works', $request);
         foreach ($resf->hits->hits as $hit) {
-            $images[] = '<a href="/show/'.$hit->_source->id.'"> <img src='. $hit->_source->images[ 0 ]->urls->huge->url .' style="width: 150px;height: 200px;" ></a>';
-            //    var_dump($hit->_source->images[0]->urls->huge->url);
-        }
-        $body = '';
-        foreach ($images as $image) {
-            $body .= $image.'';
+            $images['image'][] = $hit->_source->images[ 0 ]->urls->huge->url;
+            $images['id'][] = $hit->_source->id;
         }
 
-        return $body;
+        return $images;
     }
 
-    public function searchResultAuthor(string $string)
+    /**
+     * @param string $request
+     * @param CurlService $curlService
+     * @return array
+     */
+    public function searchResultAuthor(string $request, CurlService $curlService)
     {
-        $q = $string;
-        $q = urlencode($q);
-        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/authors?q='.$q.'&lang=fr&&&&&&&&&&&';
-//        $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/works?q=' . $q . '&lang=fr&&&&&&&&&&&&&&&&per_page=10&&&&&&&&&&&&&&&&&&';
-        $apiKey = '210ccc2ea7fc69e80d2bcd929ed801d4d19f21675addf8541be51da48e2b19d8';
-        $headers = array(
-            'Authorization: ' . $apiKey,
-            'ApiKey:' . $apiKey,
-        );
-        $ch = curl_init();
-        //On lui transmet la variable qui contient l'URL
-        curl_setopt($ch, CURLOPT_URL, $wikipediaURL);
-        //On lui demdande de nous retourner la page
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //On envoie un user-agent pour ne pas être considéré comme un bot malicieux
-        //On exécute notre requête et met le résultat dans une variable
-        $resultat = curl_exec($ch);
-        //On ferme la connexion cURL
-        curl_close($ch);
-        //echo $resultat;
-        $resf = json_decode($resultat);
+        $resf = $curlService->generateAPiUrl('authors', $request);
         foreach ($resf->hits->hits as $hit) {
-//            $titles[] = '<a href="/author/show/'.$hit->_id.'">'.$hit->_source->name->fr.'</a>';
-            $titles[] = '<p>'.$hit->_source->name->fr.'</p>';
-        }
-        $body = '';
-        foreach ($titles as $title) {
-            $body .= $title.'';
+            $titles[] = $hit->_source->name->fr;
         }
 
-        return $body;
+        return $titles;
     }
 
 }
