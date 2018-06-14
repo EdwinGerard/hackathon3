@@ -4,3 +4,7 @@ $family-sans-serif: 'ssp-light';
 @import '~bulma';
 @import '_home';
 @import '_details';
+
+html {
+    overflow: auto;
+}
