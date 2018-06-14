@@ -12,6 +12,9 @@
                         <artwork-card></artwork-card>
                     </div>
                 </div>
+
+                <!-- Load more -->
+                <button class="button is-light is-fullwidth" @click="loadMoreResults()" :class="{ 'is-loading': isLoadingMoreResults }">Charger plus de résultats</button>
             </div>
         </section>
     </section>
@@ -19,14 +22,23 @@
 
 <script>
 import NavBar from '../components/NavBar.vue'
-import HeaderSearch from '../components/home/HeaderSearch.vue'
+import HeaderSearch from '../components/HeaderSearch.vue'
 import ArtworkCard from '../components/ArtworkCard.vue'
 
 export default {
     name: 'app',
     data: () => ({
-        searchInput: 'Hello from the other side'
+        searchInput: 'Hello from the other side',
+        isLoadingMoreResults: false
     }),
+    methods: {
+        loadMoreResults() {
+            this.isLoadingMoreResults = true
+            setTimeout(() => {
+                this.isLoadingMoreResults = false
+            }, 2000)
+        }
+    },
     components: {
         NavBar,
         HeaderSearch,

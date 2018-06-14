@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 // Import views
 import HomeView from '../views/Home.vue'
-import DetailsView from '../views/Details.vue'
+import Artwork from '../views/Artwork.vue'
 
 // Create the router
 export default new VueRouter({
@@ -17,9 +17,9 @@ export default new VueRouter({
             component: HomeView
         },
         {
-            name: 'details',
-            path: '/details',
-            component: DetailsView
+            name: 'artwork',
+            path: '/artworks/:id',
+            component: Artwork
         }
     ]
 })
