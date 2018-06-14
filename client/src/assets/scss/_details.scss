@@ -1,33 +1,46 @@
-.details-container {
-    display: flex;
+.details-right {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
     height: 100vh;
+    &:hover {
+        opacity: 0.9;
+    }
+}
+     
+.details-left {
+    display: flex;
+    align-items: center;
+    padding: 50px;
+    overflow: auto;
 
-    & > div {
-        flex: 1;
+    .description-artwork {
+        font-size:18px;
     }
 }
 
-.picture-art {
-    background-image: url('/static/backgrounds/lajoconde.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
+.logo-wiki {
+    height: 20px;
 }
 
-.text-art{
-    margin-top: 200px;
+.location {
+    margin-bottom: 70px;    
+    & > span {
+        text-transform: capitalize;
+        padding: 5px 75px 5px 10px;
+        background-color: black;
+        font-size: 30px;
+        color: white;
+    }
 }
 
-.title-artwork{
-    margin-left: 50px;
-}
-
-.author-artwork{
-    font-size: 25px;
-    margin-left: 50px;
-}
-
-.description-artwork{
-    font-size:18px;
-    margin-left: 50px;
-    margin-top: 20px;
+@media (min-width: 960px) {
+    .details-container {
+        display: flex;
+        height: 100vh;
+    
+        & > div {
+            flex: 1;
+        }
+    }
 }
