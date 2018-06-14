@@ -20,7 +20,7 @@ class CallApi
         $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('works', $id);
         $res = $resf->hits->hits[ 0 ]->_source;
-        $work['apiId'] = '';
+        $work['apiId'] = null;
         $work['collection'] = '';
         $work['periodStart'] = '';
         $work['periodEnd'] = '';
@@ -33,7 +33,7 @@ class CallApi
         $work[ 'descriptionUrl' ] = '';
         $work[ 'creationDate' ] = '';
         $work['authorName'] = '';
-        $work['authorApiId'] = '';
+        $work['authorApiId'] = null;
         if (isset($res->id)) {
             $work[ 'apiId' ] = $res->id;
 
@@ -68,7 +68,10 @@ class CallApi
         }
         if (isset($res->authors[ 0 ]->name->fr)) {
             $authorName = $res->authors[ 0 ]->name->fr;
-
+            $resf = $curlService->generateAPiUrl('authors', $authorName);
+            $res = $resf->hits->hits[ 0 ];
+            $work[ 'authorName' ] = $authorName;
+            $work[ 'authorApiId' ] = $res->_id;
         }
         if (isset($res->techniques[ 0 ])) {
             $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
@@ -82,10 +85,7 @@ class CallApi
             $date = new \DateTime($res->date->display);
             $work[ 'creationDate' ] = $date;
         }
-        $resf = $curlService->generateAPiUrl('authors', $authorName);
-        $res = $resf->hits->hits[ 0 ];
-        $work[ 'authorName' ] = $authorName;
-        $work[ 'authorApiId' ] = $res->_id;
+
 //        $authors = $res->_source;
 //        $author[ 'name' ] = $authors->name->fr;
 //        $author[ 'birthday' ] = $authors->birth->display;

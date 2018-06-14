@@ -77,12 +77,12 @@ class Works
     private $authorName;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true , name="authorApiId" )
      */
     private $authorApiId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="ApiId")
      */
     private $apiId;
 
@@ -91,7 +91,24 @@ class Works
      */
     private $badgeId;
 
-    public function getId()
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+
+    public function hydrate(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if ($key == 'creationDate' && $value == null) {
+
+            } else {
+                $this->$key = $value;
+            }
+
+        }
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -108,24 +125,24 @@ class Works
         return $this;
     }
 
-    public function getPeriodStart(): ?\DateTimeInterface
+    public function getPeriodStart(): ?string
     {
         return $this->periodStart;
     }
 
-    public function setPeriodStart(?\DateTimeInterface $periodStart): self
+    public function setPeriodStart(?string $periodStart): self
     {
         $this->periodStart = $periodStart;
 
         return $this;
     }
 
-    public function getPeriodEnd(): ?\DateTimeInterface
+    public function getPeriodEnd(): ?string
     {
         return $this->periodEnd;
     }
 
-    public function setPeriodEnd(?\DateTimeInterface $periodEnd): self
+    public function setPeriodEnd(?string $periodEnd): self
     {
         $this->periodEnd = $periodEnd;
 
@@ -204,14 +221,14 @@ class Works
         return $this;
     }
 
-    public function getDecriptionUrl(): ?string
+    public function getDescriptionUrl(): ?string
     {
-        return $this->decriptionUrl;
+        return $this->descriptionUrl;
     }
 
-    public function setDecriptionUrl(?string $decriptionUrl): self
+    public function setDescriptionUrl(?string $descriptionUrl): self
     {
-        $this->decriptionUrl = $decriptionUrl;
+        $this->descriptionUrl = $descriptionUrl;
 
         return $this;
     }
@@ -263,24 +280,6 @@ class Works
 
         return $this;
     }
-    public function hydrate(array $data)
-    {
-        foreach ($data as $key => $value){
-            $this->$key = $value;
-        }
-    }
-
-    public function getDescriptionUrl(): ?string
-    {
-        return $this->descriptionUrl;
-    }
-
-    public function setDescriptionUrl(?string $descriptionUrl): self
-    {
-        $this->descriptionUrl = $descriptionUrl;
-
-        return $this;
-    }
 
     public function getBadgeId(): ?int
     {
@@ -293,4 +292,5 @@ class Works
 
         return $this;
     }
+
 }

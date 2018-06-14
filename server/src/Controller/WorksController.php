@@ -7,8 +7,13 @@ use App\Service\CallApi;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 
 /**
@@ -50,15 +55,13 @@ class WorksController extends Controller
             $works = $callApi->searchResultsWork($work);
         }
 
-
-        // attention $works doit être du JSON
         return $this->json($works);
     }
 
     /**
      * @param CallApi $callApi
      * @param int $apiId
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      * @Route("/id/{apiId}",name="work_show")
      * @Method("GET")
      */
@@ -67,20 +70,24 @@ class WorksController extends Controller
         $repository = $this->getDoctrine()->getRepository(Works::class);
         $work = $repository->findOneBy(['apiId' => $apiId]);
 
-        if ($work != null) {
-            return $this->json($work);
+        if ($work == null) {
+            $resultApi = $callApi->connect($apiId);
+            $work = new Works();
+
+            $work->hydrate($resultApi);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($work);
+            $entityManager->flush();
+
         }
 
-        $resultApi = $callApi->connect($apiId);
-        $work = new Works();
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
 
-        $work->hydrate($resultApi);
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($work);
-        $entityManager->flush();
+        $jsonContent = $serializer->serialize($work, 'json');
 
-
-        return $this->json($work);
+        return new Response($jsonContent);
     }
 
     /**
