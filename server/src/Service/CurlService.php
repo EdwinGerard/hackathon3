@@ -23,7 +23,7 @@ class CurlService
             $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/'.$param.'/'.$request;
         }else {
             $request = urlencode($request);
-            $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/'.$param.'?q='.$request;
+            $wikipediaURL = 'https://api.art.rmngp.fr:443/v1/'.$param.'?q='.$request.'&per_page=12';
         }
         $apiKey = '210ccc2ea7fc69e80d2bcd929ed801d4d19f21675addf8541be51da48e2b19d8';
         $headers = array(
