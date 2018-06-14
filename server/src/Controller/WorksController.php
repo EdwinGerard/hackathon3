@@ -42,17 +42,18 @@ class WorksController extends Controller
      * @param string $work
      * @param bool $allowBDD
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/search/{work}", name="search_result")
+     * @Route("/search/{str}", name="search_result")
      * @Method("GET")
      */
-    public function searchByName(CallApi $callApi, string $work, $allowBDD = false)
+    public function searchByName(CallApi $callApi, string $str, $allowBDD = true)
     {
-
+        $works=null;
         if ($allowBDD) {
             $repository = $this->getDoctrine()->getRepository(Works::class);
-            $works = $repository->findBy(['title' => '%' . $work . '%']);
-        } else {
-            $works = $callApi->searchResultsWork($work);
+            $works = $repository->findByTitle($str);
+        }
+        if (!$allowBDD || !isset($works[0])) {
+            $works = $callApi->searchResultsWork($str);
         }
 
         return $this->json($works);
@@ -74,7 +75,7 @@ class WorksController extends Controller
             $resultApi = $callApi->connect($apiId);
             $work = new Works();
 
-            $work->hydrate($resultApi);
+            $data['error'] = $work->hydrate($resultApi);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($work);
             $entityManager->flush();
@@ -85,9 +86,10 @@ class WorksController extends Controller
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
 
-        $jsonContent = $serializer->serialize($work, 'json');
+        $data['work']=$work;
 
-        return new Response($jsonContent);
+        $data = $serializer->serialize($data, 'json');
+        return new Response($data);
     }
 
     /**

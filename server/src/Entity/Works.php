@@ -106,11 +106,11 @@ class Works
             if ($key == 'creationDate' && $value == null) {
                 unset($data[$key]);
             } else {
-                if(isset($this->$key)){
+
+                if(property_exists($this,$key)){
                     $this->$key = $value;
                     unset($data[$key]);
                 }
-
             }
         }
         // control des infos non hydratées

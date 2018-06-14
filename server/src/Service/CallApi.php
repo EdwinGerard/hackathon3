@@ -17,11 +17,11 @@ class CallApi
      * @param int $id
      * @return mixed
      */
-    public function connect (int $id)
+    public function connect(int $id)
     {
         $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('works', $id);
-        $res = $resf->hits->hits[ 0 ]->_source;
+        $res = $resf->hits->hits[0]->_source;
         $work['apiId'] = null;
         $work['collection'] = '';
         $work['periodStart'] = '';
@@ -30,51 +30,52 @@ class CallApi
         $work['locationCity'] = '';
         $work['image'] = '';
         $work['title'] = '';
-        $work[ 'technique' ] = '';
-        $work[ 'description' ] = '';
-        $work[ 'descriptionUrl' ] = '';
-        $work[ 'creationDate' ] = '';
+        $work['technique'] = '';
+        $work['description'] = '';
+        $work['descriptionUrl'] = '';
+        $work['creationDate'] = '';
         $work['authorName'] = '';
         $work['authorApiId'] = null;
         if (isset($res->id)) {
-            $work[ 'apiId' ] = $res->id;
+            $work['apiId'] = $res->id;
 
         }
-        if (isset($res->collections[ 0 ]->name->fr)) {
-            $work[ 'collection' ] = $res->collections[ 0 ]->name->fr;
+        if (isset($res->collections[0]->name->fr)) {
+            $work['collection'] = $res->collections[0]->name->fr;
 
         }
-        if (isset($res->periods[ 0 ]->suggest_fr->input)) {
-            $work[ 'periodStart' ] = $res->periods[ 0 ]->suggest_fr->input;
+        if (isset($res->periods[0]->suggest_fr->input)) {
+            $work['periodStart'] = $res->periods[0]->suggest_fr->input;
 
         }
-        if (isset($res->periods[ 0 ]->suggest_fr->output)) {
-            $work[ 'periodEnd' ] = $res->periods[ 0 ]->suggest_fr->output;
+        if (isset($res->periods[0]->suggest_fr->output)) {
+            $work['periodEnd'] = $res->periods[0]->suggest_fr->output;
 
         }
         if (isset($res->location->name->fr)) {
-            $work[ 'locationName' ] = $res->location->name->fr;
+            $work['locationName'] = $res->location->name->fr;
 
         }
         if (isset($res->location->city->fr)) {
-            $work[ 'locationCity' ] = $res->location->city->fr;
+            $work['locationCity'] = $res->location->city->fr;
 
         }
-        if (isset($res->images[ 0 ]->urls->huge->url)) {
-            $work[ 'image' ] = $res->images[ 0 ]->urls->huge->url;
+        if (isset($res->images[0]->urls->huge->url)) {
+            $work['image'] = $res->images[0]->urls->huge->url;
 
         }
         if (isset($res->title->fr)) {
-            $work[ 'title' ] = $res->title->fr;
+            $work['title'] = $res->title->fr;
 
         }
+
         if (isset($res->techniques[ 0 ])) {
             $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
         }
 
         if (isset($res->wikipedia_extract->fr)) {
-            $work[ 'description' ] = $res->wikipedia_extract->fr;
-            $work[ 'descriptionUrl' ] = $res->wikipedia_url->fr;
+            $work['description'] = $res->wikipedia_extract->fr;
+            $work['descriptionUrl'] = $res->wikipedia_url->fr;
         }
         if (isset($res->date->display)) {
             $work[ 'creationDate' ] = intval($res->date->display);
@@ -94,40 +95,39 @@ class CallApi
      * @param string $request
      * @return mixed
      */
-    public function searchResultsWork (string $request)
+    public function searchResultsWork(string $request)
     {
         $curlService = new CurlService();
 
         $resf = $curlService->generateAPiUrl('works', $request);
-        $count = 0;
-        foreach ($resf->hits->hits as $hit) {
-            if (isset($hit->_source->images[ 0 ]->urls->huge->url)) {
-                $images[ $count ][ 'image' ] = $hit->_source->images[ 0 ]->urls->huge->url;
+        foreach ($resf->hits->hits as $key => $hit) {
+            if (isset($hit->_source->images[0]->urls->huge->url)) {
+                $works[$key]['image'] = $hit->_source->images[0]->urls->huge->url;
 
             }
             if (isset($hit->_source->id)) {
-                $images[ $count ][ 'id' ] = $hit->_source->id;
+                $works[$key]['id'] = $hit->_source->id;
 
             }
             if (isset($hit->_source->title->fr)) {
-                $images[ $count ][ 'title' ] = $hit->_source->title->fr;
+                $works[$key]['title'] = $hit->_source->title->fr;
 
             }
-            if (isset($hit->_source->authors[ 0 ]->name->fr)) {
-                $images[ $count ][ 'authorName' ] = $hit->_source->authors[ 0 ]->name->fr;
+            if (isset($hit->_source->authors[0]->name->fr)) {
+                $works[$key]['authorName'] = $hit->_source->authors[0]->name->fr;
 
             }
-            $count++;
         }
+        $works['totalMatch']=$resf->hits->total;
 
-        return $images;
+        return $works;
     }
 
     /**
      * @param string $request
      * @return array
      */
-    public function searchResultAuthor (string $request)
+    public function searchResultAuthor(string $request)
     {
         $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('authors', $request);
@@ -142,7 +142,7 @@ class CallApi
     {
         $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('authors', $request);
-        $res = $resf->hits->hits[ 0 ]->_source;
+        $res = $resf->hits->hits[0]->_source;
         $author['name'] = '';
         $author['birth'] = '';
         $author['death'] = '';
