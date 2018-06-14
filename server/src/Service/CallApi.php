@@ -69,8 +69,8 @@ class CallApi
 
         }
 
-        if (isset($res->techniques[ 0 ])) {
-            $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
+        if (isset($res->techniques[0])) {
+            $work['technique'] = $res->techniques[0]->suggest_fr->input;
         }
 
         if (isset($res->wikipedia_extract->fr)) {
@@ -78,17 +78,39 @@ class CallApi
             $work['descriptionUrl'] = $res->wikipedia_url->fr;
         }
         if (isset($res->date->display)) {
-            $work[ 'creationDate' ] = intval($res->date->display);
+            $work['creationDate'] = intval($res->date->display);
         }
-        if (isset($res->authors[ 0 ]->name->fr)) {
-            $authorName = $res->authors[ 0 ]->name->fr;
+        if (isset($res->authors[0]->name->fr)) {
+            $authorName = $res->authors[0]->name->fr;
             $resf2 = $curlService->generateAPiUrl('authors', $authorName);
-            $res2 = $resf2->hits->hits[ 0 ];
-            $work[ 'authorName' ] = $authorName;
-            $work[ 'authorApiId' ] = $res2->_id;
+            $res2 = $resf2->hits->hits[0];
+            $work['authorName'] = $authorName;
+            $work['authorApiId'] = $res2->_id;
+            $work['author'] = $this->buildAuthor($res->authors[0]);
+            if (isset($res->authors[0]->citizenship)) $data['author']['citizen'] = $res->authors[0]->citizenship;
+            $work['author']['apiId'] = $work['authorApiId'];
+
         }
 
+
         return $work;
+    }
+
+    private function buildAuthor($author)
+    {
+
+        $data['name'] = '';
+        $data['description'] = '';
+        $data['descriptionUrl'] = '';
+        $data['birth'] = '';
+        $data['death'] = '';
+        if (isset($author->citizenship)) $data['citizen'] = $author->citizenship;
+        if (isset($author->name->fr)) $data['name'] = $author->name->fr;
+        if (isset($author->wikipedia_extract->fr)) $data['description'] = $author->wikipedia_extract->fr;
+        if (isset($author->wikipedia_url->fr)) $data['descriptionUrl'] = $author->wikipedia_url->fr;
+        if (isset($author->birth->display)) $data['birth'] = $author->birth->display;
+        if (isset($author->death->display)) $data['death'] = $author->death->display;
+        return $data;
     }
 
     /**
@@ -118,26 +140,26 @@ class CallApi
 
             }
         }
-        $works['totalMatch']=$resf->hits->total;
+        $works['totalMatch'] = $resf->hits->total;
 
         return $works;
     }
 
-    /**
-     * @param string $request
-     * @return array
-     */
-    public function searchResultAuthor(string $request)
-    {
-        $curlService = new CurlService();
-        $resf = $curlService->generateAPiUrl('authors', $request);
-        foreach ($resf->hits->hits as $hit) {
-            $titles[] = $hit->_source->name->fr;
-        }
-
-        return $titles;
-    }
-
+//    /**
+//     * @param string $request
+//     * @return array
+//     */
+//    public function searchResultAuthor(string $request)
+//    {
+//        $curlService = new CurlService();
+//        $resf = $curlService->generateAPiUrl('authors', $request);
+//        foreach ($resf->hits->hits as $hit) {
+//            $titles[] = $hit->_source->name->fr;
+//        }
+//
+//        return $titles;
+//    }
+/*
     public function findAuthor(string $request)
     {
         $curlService = new CurlService();
@@ -165,5 +187,5 @@ class CallApi
         }
         return $author;
     }
-
+*/
 }

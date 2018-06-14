@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Works;
 use App\Service\CallApi;
 use App\Service\SerializerService;
@@ -77,8 +78,18 @@ class WorksController extends Controller
             $data['error'] = $work->hydrate($resultApi);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($work);
-            $entityManager->flush();
 
+            // on recherche si l'autheur exist
+            $repositoryAuthor = $this->getDoctrine()->getRepository(Author::class);
+            $author = $repositoryAuthor->findOneByApiId($resultApi['authorApiId']);
+
+            if($author == null ){
+                $author = new Author();
+                $author->hydrate($resultApi['author']);
+            }
+
+            $entityManager->persist($author);
+            $entityManager->flush();
         }
 
         $data['work'] = $work;
