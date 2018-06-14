@@ -20,6 +20,20 @@ class CallApi
         $curlService = new CurlService();
         $resf = $curlService->generateAPiUrl('works', $id);
         $res = $resf->hits->hits[ 0 ]->_source;
+        $work['apiId'] = '';
+        $work['collection'] = '';
+        $work['periodStart'] = '';
+        $work['periodEnd'] = '';
+        $work['locationName'] = '';
+        $work['locationCity'] = '';
+        $work['image'] = '';
+        $work['title'] = '';
+        $work[ 'technique' ] = '';
+        $work[ 'description' ] = '';
+        $work[ 'descriptionUrl' ] = '';
+        $work[ 'creationDate' ] = '';
+        $work['authorName'] = '';
+        $work['authorApiId'] = '';
         if (isset($res->id)) {
             $work[ 'apiId' ] = $res->id;
 
@@ -56,17 +70,14 @@ class CallApi
             $authorName = $res->authors[ 0 ]->name->fr;
 
         }
-        $work[ 'technique' ] = '';
         if (isset($res->techniques[ 0 ])) {
             $work[ 'technique' ] = $res->techniques[ 0 ]->suggest_fr->input;
         }
-        $work[ 'description' ] = '';
-        $work[ 'descriptionUrl' ] = '';
+
         if (isset($res->wikipedia_extract->fr)) {
             $work[ 'description' ] = $res->wikipedia_extract->fr;
             $work[ 'descriptionUrl' ] = $res->wikipedia_url->fr;
         }
-        $work[ 'creationDate' ] = '';
         if (isset($res->date->display)) {
             $work[ 'creationDate' ] = $res->date->display;
         }
