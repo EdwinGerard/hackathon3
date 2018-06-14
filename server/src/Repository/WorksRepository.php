@@ -19,6 +19,22 @@ class WorksRepository extends ServiceEntityRepository
         parent::__construct($registry, Works::class);
     }
 
+    /**
+     * @param $title
+     * @param $page
+     * @return mixed
+     */
+    public function findByTitleLike($title, $page)
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.title LIKE :val')
+            ->setParameter('val', '%'.$title.'%')
+            ->setFirstResult(12*$page-1)
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Works[] Returns an array of Works objects
 //     */
