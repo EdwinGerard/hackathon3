@@ -6,6 +6,7 @@ use App\Entity\Works;
 use App\Service\CallApi;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -89,7 +90,7 @@ class WorksController extends Controller
         $data['work']=$work;
 
         $data = $serializer->serialize($data, 'json');
-        return new Response($data);
+        return $response = JsonResponse::fromJsonString($data);
     }
 
     /**
