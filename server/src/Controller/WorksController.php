@@ -4,17 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Works;
 use App\Service\CallApi;
+use App\Service\SerializerService;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 
 /**
@@ -27,25 +23,24 @@ use Symfony\Component\Serializer\Serializer;
  */
 class WorksController extends Controller
 {
+    private $serializerService;
     /**
-     * @Route("/", name="works")
+     * WorksController constructor.
+     * @param SerializerService $serializerService
      */
-    public function index()
+    public function __construct(SerializerService $serializerService)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/WorksController.php',
-        ]);
+        $this->serializerService = $serializerService;
     }
 
     /**
      * @param CallApi $callApi
-     * @param string $work
+     * @param string $str
      * @param bool $allowBDD
      * @param int $page
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param SerializerService $serializerService
+     * @return Response
      * @Route("/search/{str}/{page}", name="search_result")
-     * @Method("GET")
      */
     public function searchByName(CallApi $callApi, string $str, $allowBDD = true, $page = 0)
     {
@@ -57,12 +52,10 @@ class WorksController extends Controller
         if (!$allowBDD || !isset($works[0])) {
             $works = $callApi->searchResultsWork($str);
         }
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
+
         $data['works'] = $works;
-        $data = $serializer->serialize($data, 'json');
-        return $this->jsonResponse($data);
+        return $this->serializerService->serialize($data);
+
     }
 
     /**
@@ -88,19 +81,22 @@ class WorksController extends Controller
 
         }
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $data['work'] = $work;
 
-        $data = $serializer->serialize($data, 'json');
-        $response = new Response();
-        $response->setContent($data);
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $this->serializerService->serialize($data);
 
-        return $response;
+    }
+
+    /**
+     * @param Works $works
+     * @return Response
+     * @Route("/badge/{badgeId}",name="show_badge")
+     */
+    public function showBadge(Works $works)
+    {
+        $data['work']=$works;
+
+        return $this->serializerService->serialize($data);
 
     }
 
@@ -130,12 +126,5 @@ class WorksController extends Controller
         ]);
     }
 
-    private function jsonResponse($data)
-    {
-        $response = new Response();
-        $response->setContent($data);
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        return $response;
-    }
+
 }
