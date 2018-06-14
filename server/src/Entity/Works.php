@@ -86,6 +86,11 @@ class Works
      */
     private $apiId;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $badgeId;
+
     public function getId()
     {
         return $this->id;
@@ -273,6 +278,18 @@ class Works
     public function setDescriptionUrl(?string $descriptionUrl): self
     {
         $this->descriptionUrl = $descriptionUrl;
+
+        return $this;
+    }
+
+    public function getBadgeId(): ?int
+    {
+        return $this->badgeId;
+    }
+
+    public function setBadgeId(?int $badgeId): self
+    {
+        $this->badgeId = $badgeId;
 
         return $this;
     }
