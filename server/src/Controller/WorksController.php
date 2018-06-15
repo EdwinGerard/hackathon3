@@ -42,7 +42,7 @@ class WorksController extends Controller
      * @param int $page
      * @param SerializerService $serializerService
      * @return Response
-     * @Route("/search/{str}/{page}", name="search_result")
+     * @Route("/search/{str}/{page}/{allowBDD}", name="search_result")
      */
     public function searchByName(CallApi $callApi, string $str, $allowBDD = true, $page = 0)
     {
@@ -64,7 +64,7 @@ class WorksController extends Controller
      * @param CallApi $callApi
      * @param int $apiId
      * @return Response
-     * @Route("/id/{apiId}",name="work_show")
+     * @Route("/id/{apiId}/{forceApi}",name="work_show")
      * @Method("GET")
      */
     public function show(CallApi $callApi, int $apiId)
