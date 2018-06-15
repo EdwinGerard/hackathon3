@@ -94,16 +94,16 @@ class AuthorController extends Controller
 //
 //    }
 
-//    /**
-//     * @Route("/author/search/{string}", name="temp_search_result_author")
-//     * @param CallApi $callApi
-//     * @param string $string
-//     * @return \Symfony\Component\HttpFoundation\JsonResponse
-//     */
-//    public function searchAuthorAction(CallApi $callApi, string $string)
-//    {
-//        $body = $callApi->searchResultAuthor($string);
-//        return $this->json($body);
-//    }
+    /**
+     * @param string $string
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/search/{string}", name="search_result_author")
+     */
+    public function searchAuthorAction(string $string)
+    {
+        $repository = $this->getDoctrine()->getRepository(Author::class);
+        $authors = $repository->findByNameLike($string);
+        return $this->serializerService->serialize($authors);
+    }
 
 }
