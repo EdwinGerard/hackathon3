@@ -69,13 +69,13 @@ class Author
     public function hydrate(array $data)
     {
         foreach ($data as $key => $value){
+            $error=false;
             if($key == 'birth' || $key == 'death'){
                 $value = DateTime::createFromFormat('Y-m-d', $value);
 
+                if($value === false)$error=true;
             }
-            if($value != null ) {
-                $this->$key = $value;
-            }
+            if(!$error) $this->$key = $value;
         }
     }
 
