@@ -8,14 +8,15 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180614195020 extends AbstractMigration
+final class Version20180615090114 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE author ADD citizen VARCHAR(80) DEFAULT NULL, ADD api_id INT DEFAULT NULL, CHANGE bio description LONGTEXT DEFAULT NULL, CHANGE bio_url description_url VARCHAR(255) DEFAULT NULL');
+        $this->addSql('CREATE TABLE liked (id INT AUTO_INCREMENT NOT NULL, works_id INT NOT NULL, like_it TINYINT(1) NOT NULL, client_id VARCHAR(255) NOT NULL, INDEX IDX_CA19CBBAF6CB822A (works_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE liked ADD CONSTRAINT FK_CA19CBBAF6CB822A FOREIGN KEY (works_id) REFERENCES works (id)');
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +24,6 @@ final class Version20180614195020 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE author DROP citizen, DROP api_id, CHANGE description bio LONGTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci, CHANGE description_url bio_url VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci');
+        $this->addSql('DROP TABLE liked');
     }
 }
