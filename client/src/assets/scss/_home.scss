@@ -1,0 +1,29 @@
+.header-banner {
+    .banner {
+        height: 50vh;
+        background-image: url('/static/backgrounds/musee-fabre.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        .overlay {
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+
+            .search-input {
+                background-color: rgba(0, 0, 0, 0.1);
+                color: white;
+                border-radius: 0%;
+                border: none;
+                box-shadow: none;
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+    }
+}

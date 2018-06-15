@@ -1,0 +1,10 @@
+$family-sans-serif: 'ssp-light';
+
+@import '_fonts';
+@import '~bulma';
+@import '_home';
+@import '_details';
+
+html {
+    overflow: auto;
+}

@@ -1,0 +1,5 @@
+/server/.env
+/server/public/bundles/
+/server/var/
+/server/vendor/
+/server/.web-server-pid
