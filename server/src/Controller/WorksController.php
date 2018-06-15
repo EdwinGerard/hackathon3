@@ -88,7 +88,6 @@ class WorksController extends Controller
             if ($author == null) {
                 $author = new Author();
                 $author->hydrate($resultApi['author']);
-
                 $entityManager->persist($author);
                 $entityManager->flush();
                 $author = $repositoryAuthor->findOneByApiId($resultApi['authorApiId']);
