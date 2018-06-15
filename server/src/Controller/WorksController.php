@@ -8,6 +8,7 @@ use App\Service\CallApi;
 use App\Service\SerializerService;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -129,9 +130,11 @@ class WorksController extends Controller
     public function editShow(Works $works)
     {
         $form = $this->createFormBuilder($works)
+            ->setAction($this->generateUrl('work_edit', array('apiId' => $works->getApiId())))
+            ->setMethod('POST')
             ->add('collection')
-            ->add('periodStart',DateType::class)
-            ->add('periodEnd',DateType::class)
+            ->add('periodStart')
+            ->add('periodEnd')
             ->add('technique')
             ->add('locationName')
             ->add('locationCity')
@@ -143,12 +146,13 @@ class WorksController extends Controller
             ->add('authorName')
             ->add('authorApiId',NumberType::class)
             ->add('badgeId',NumberType::class)
-            ->add('author',Author::class)
+            ->add('author',EntityType::class, array('class' => Author::class, 'choice_label' => 'name'))
             ->add('authorApiId',NumberType::class)
             ->add('save', SubmitType::class)
             ->getForm();
 
         return $this->render('works/edit.html.twig', array(
+            'work' => $works,
             'form' => $form->createView(),
         ));
     }
