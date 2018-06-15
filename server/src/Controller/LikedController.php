@@ -47,7 +47,7 @@ class LikedController extends Controller
     /**
      * @param Works $work
      * @param $isLike
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/{id}/{isLike}",name="add_like")
      */
     public function addLike(Works $work, $isLike)
@@ -73,7 +73,8 @@ class LikedController extends Controller
         $em->flush();
 
 
-        return $this->redirectToRoute('work_show', ['apiId' => $work->getApiId()]);
+        $data['work'] = $work;
+        return $this->serializerService->serialize($data);
     }
 
 
