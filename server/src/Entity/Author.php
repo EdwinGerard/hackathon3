@@ -72,10 +72,10 @@ class Author
             $error=false;
             if($key == 'birth' || $key == 'death'){
                 $value = DateTime::createFromFormat('Y-m-d', $value);
+
                 if($value === false)$error=true;
             }
             if(!$error) $this->$key = $value;
-
         }
     }
 

@@ -28,11 +28,10 @@ class AuthorController extends Controller
 
     /**
      * @param Author $author
-     * @param SerializerService $serializerService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="author")
      */
-    public function index(SerializerService $serializerService)
+    public function index()
     {
         $rep = $this->getDoctrine()->getRepository(Author::class);
         $data = $rep->findAll();
