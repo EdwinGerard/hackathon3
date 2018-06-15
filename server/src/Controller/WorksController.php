@@ -166,22 +166,38 @@ class WorksController extends Controller
      */
     public function edit(Request $request, Works $works)
     {
+        $form = $this->createFormBuilder($works)
+            ->setAction($this->generateUrl('work_edit', array('apiId' => $works->getApiId())))
+            ->setMethod('POST')
+            ->add('collection')
+            ->add('periodStart')
+            ->add('periodEnd')
+            ->add('technique')
+            ->add('locationName')
+            ->add('locationCity')
+            ->add('image')
+            ->add('title')
+            ->add('description',TextareaType::class)
+            ->add('descriptionUrl')
+            ->add('creationDate',NumberType::class)
+            ->add('authorName')
+            ->add('authorApiId',NumberType::class)
+            ->add('badgeId',NumberType::class)
+            ->add('author',EntityType::class, array('class' => Author::class, 'choice_label' => 'name'))
+            ->add('authorApiId',NumberType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
 
-        $data = $request->query->all();
-        $work = new Works();
-        $error = $work->hydrate($data);
+        $form->handleRequest($request);
 
-        if (!empty($error)) {
-            dump($error);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
         }
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($work);
-        $entityManager->flush();
 
         return $this->redirectToRoute('work_show', [
             'apiId' => $works->getApiId()
         ]);
     }
-
 
 }
