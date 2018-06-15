@@ -128,7 +128,7 @@ class CallApi
 
             }
             if (isset($hit->_source->id)) {
-                $works[$key]['id'] = $hit->_source->id;
+                $works[$key]['apiId'] = $hit->_source->id;
 
             }
             if (isset($hit->_source->title->fr)) {
