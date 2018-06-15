@@ -8,6 +8,11 @@ use App\Service\CallApi;
 use App\Service\SerializerService;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -85,7 +90,7 @@ class WorksController extends Controller
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            if ($author == null) {
+            if ($author == null && !empty($resultApi['author'])) {
                 $author = new Author();
                 $author->hydrate($resultApi['author']);
                 $entityManager->persist($author);
@@ -120,11 +125,36 @@ class WorksController extends Controller
     /**
      * @param Works $works
      * @return Response
+     * @Route("/editShow/{id}",name="show_edit")
      */
     public function editShow(Works $works)
     {
+        $form = $this->createFormBuilder($works)
+            ->setAction($this->generateUrl('work_edit', array('apiId' => $works->getApiId())))
+            ->setMethod('POST')
+            ->add('collection')
+            ->add('periodStart')
+            ->add('periodEnd')
+            ->add('technique')
+            ->add('locationName')
+            ->add('locationCity')
+            ->add('image')
+            ->add('title')
+            ->add('description',TextareaType::class)
+            ->add('descriptionUrl')
+            ->add('creationDate',NumberType::class)
+            ->add('authorName')
+            ->add('authorApiId',NumberType::class)
+            ->add('badgeId',NumberType::class)
+            ->add('author',EntityType::class, array('class' => Author::class, 'choice_label' => 'name'))
+            ->add('authorApiId',NumberType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
 
-        return $this->render();
+        return $this->render('works/edit.html.twig', array(
+            'work' => $works,
+            'form' => $form->createView(),
+        ));
     }
 
     /**
@@ -136,22 +166,38 @@ class WorksController extends Controller
      */
     public function edit(Request $request, Works $works)
     {
+        $form = $this->createFormBuilder($works)
+            ->setAction($this->generateUrl('work_edit', array('apiId' => $works->getApiId())))
+            ->setMethod('POST')
+            ->add('collection')
+            ->add('periodStart')
+            ->add('periodEnd')
+            ->add('technique')
+            ->add('locationName')
+            ->add('locationCity')
+            ->add('image')
+            ->add('title')
+            ->add('description',TextareaType::class)
+            ->add('descriptionUrl')
+            ->add('creationDate',NumberType::class)
+            ->add('authorName')
+            ->add('authorApiId',NumberType::class)
+            ->add('badgeId',NumberType::class)
+            ->add('author',EntityType::class, array('class' => Author::class, 'choice_label' => 'name'))
+            ->add('authorApiId',NumberType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
 
-        $data = $request->query->all();
-        $work = new Works();
-        $error = $work->hydrate($data);
+        $form->handleRequest($request);
 
-        if (!empty($error)) {
-            dump($error);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
         }
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($work);
-        $entityManager->flush();
 
         return $this->redirectToRoute('work_show', [
             'apiId' => $works->getApiId()
         ]);
     }
-
 
 }
