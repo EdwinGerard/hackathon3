@@ -8,6 +8,10 @@ use App\Service\CallApi;
 use App\Service\SerializerService;
 use Doctrine\ORM\Mapping as ORM;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +46,7 @@ class WorksController extends Controller
      * @param int $page
      * @param SerializerService $serializerService
      * @return Response
-     * @Route("/search/{str}/{page}", name="search_result")
+     * @Route("/search/{str}/{page}/{allowBDD}", name="search_result")
      */
     public function searchByName(CallApi $callApi, string $str, $allowBDD = true, $page = 0)
     {
@@ -88,7 +92,6 @@ class WorksController extends Controller
             if ($author == null) {
                 $author = new Author();
                 $author->hydrate($resultApi['author']);
-
                 $entityManager->persist($author);
                 $entityManager->flush();
                 $author = $repositoryAuthor->findOneByApiId($resultApi['authorApiId']);
@@ -116,6 +119,38 @@ class WorksController extends Controller
 
         return $this->serializerService->serialize($data);
 
+    }
+
+    /**
+     * @param Works $works
+     * @return Response
+     * @Route("works/editShow/{id}",name="show_edit")
+     */
+    public function editShow(Works $works)
+    {
+        $form = $this->createFormBuilder($works)
+            ->add('collection')
+            ->add('periodStart',DateType::class)
+            ->add('periodEnd',DateType::class)
+            ->add('technique')
+            ->add('locationName')
+            ->add('locationCity')
+            ->add('image')
+            ->add('title')
+            ->add('description',TextareaType::class)
+            ->add('descriptionUrl')
+            ->add('creationDate',NumberType::class)
+            ->add('authorName')
+            ->add('authorApiId',NumberType::class)
+            ->add('badgeId',NumberType::class)
+            ->add('author',Author::class)
+            ->add('authorApiId',NumberType::class)
+            ->add('save', SubmitType::class)
+            ->getForm();
+
+        return $this->render('works/edit.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
