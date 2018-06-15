@@ -32,6 +32,13 @@
                     <p class="control">
                         <a class="button is-light is-radiusless" href="#" target="_blank">A propos de l'auteur</a>
                     </p>
+                    <p class="control">
+                        <button
+                            class="button is-success is-radiusless is-outlined"
+                            :class="{ 'is-success': isLiked, 'is-danger': !isLiked }"
+                            @click="sendLike(!isLiked)"
+                        >{{ isLiked ? "J'aime" : "J'aime pas" }}</button>
+                    </p>
                 </div>
 
                 <!-- Autres liens (Urls) -->
@@ -57,23 +64,36 @@ export default {
     computed: {
         adminEditUrl() {
             return 'http://localhost:8000/works/editShow/' + this.artwork.id
+        },
+        isLiked() {
+            return this.artwork.likes && this.artwork.likes.length && this.artwork.likes[this.artwork.likes.length - 1].likeIt
+        }
+    },
+    methods: {
+        sendLike(like) {
+            fetch('http://localhost:8000/like/' + this.artwork.id + '/' + Number(like))
+                .catch(console.error)
+                .then(res => res.json())
+                .then(res => this.handleResponse(res).bind(this))
+        },
+        handleResponse({ work }) {
+            this.artwork = work
+             if (this.artwork.image === 'https://api.art.rmngp.fr/v1/images/408/503545/xxl?t=USMLv3rs7PLOTYc1mxsmdQ')
+                    this.artwork.image = '/static/easter-eggs/joconde.gif'
         }
     },
     beforeCreate: function() {
-        console.log(this.$router)
         this.artworkId = parseInt(this.$route.params.id)
         fetch('http://localhost:8000/works/id/' + this.artworkId)
-        .catch(err => {
-            this.loadingMessage = err.message
-            this.loadingMessage += '<br/><a href="/">Retourner en arrière</a>'
-        })
-        .then(res => res.json())
-        .then(({ work }) => {
-            this.artwork = work
-            if (this.artwork.image === 'https://api.art.rmngp.fr/v1/images/408/503545/xxl?t=USMLv3rs7PLOTYc1mxsmdQ')
-                this.artwork.image = '/static/easter-eggs/joconde.gif'
-            this.isLoading = false
-        })
+            .catch(err => {
+                this.loadingMessage = err.message
+                this.loadingMessage += '<br/><a href="/">Retourner en arrière</a>'
+            })
+            .then(res => res.json())
+            .then(res => {
+                this.handleResponse(res)
+                this.isLoading = false
+            })
     }
 }
 </script>
