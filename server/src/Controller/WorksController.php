@@ -64,7 +64,7 @@ class WorksController extends Controller
      * @param CallApi $callApi
      * @param int $apiId
      * @return Response
-     * @Route("/id/{apiId}/{forceApi}",name="work_show")
+     * @Route("/id/{apiId}",name="work_show")
      * @Method("GET")
      */
     public function show(CallApi $callApi, int $apiId)
@@ -115,6 +115,16 @@ class WorksController extends Controller
 
         return $this->serializerService->serialize($data);
 
+    }
+
+    /**
+     * @param Works $works
+     * @return Response
+     */
+    public function editShow(Works $works)
+    {
+
+        return $this->render();
     }
 
     /**
