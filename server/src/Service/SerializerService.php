@@ -26,7 +26,6 @@ class SerializerService
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizer = new ObjectNormalizer();
 
-
         $normalizer->setCircularReferenceHandler(function ($object) {
             return $object->getId();
         });
