@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -95,6 +97,16 @@ class Works
      * @ORM\ManyToOne(targetEntity="App\Entity\Author", inversedBy="works")
      */
     private $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Liked", mappedBy="works", orphanRemoval=true)
+     */
+    private $likes;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
 
     public function jsonSerialize()
     {
@@ -325,6 +337,37 @@ class Works
     public function setAuthor(?Author $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Liked[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Liked $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setWorks($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Liked $like): self
+    {
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getWorks() === $this) {
+                $like->setWorks(null);
+            }
+        }
 
         return $this;
     }
