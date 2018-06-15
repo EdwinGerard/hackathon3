@@ -90,7 +90,7 @@ class WorksController extends Controller
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            if ($author == null) {
+            if ($author == null && !empty($resultApi['author'])) {
                 $author = new Author();
                 $author->hydrate($resultApi['author']);
                 $entityManager->persist($author);
