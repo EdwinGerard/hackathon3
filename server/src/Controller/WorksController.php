@@ -124,7 +124,7 @@ class WorksController extends Controller
     /**
      * @param Works $works
      * @return Response
-     * @Route("works/editShow/{id}",name="show_edit")
+     * @Route("/editShow/{id}",name="show_edit")
      */
     public function editShow(Works $works)
     {
